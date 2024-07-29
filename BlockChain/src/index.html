@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPFS Image Storage</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
+</head>
+<body>
+    <h1>IPFS Image Storage DApp</h1>
+    <button onclick="uploadImage()">Upload Image to IPFS</button>
+    <button onclick="retrieveImage()">Retrieve Image from IPFS</button>
+    <script>
+        let web3;
+
+        if (window.ethereum) {
+            web3 = new Web3(window.ethereum);
+            try {
+                window.ethereum.enable(); // Request access
+            } catch (error) {
+                console.error("User denied account access");
+            }
+        } else if (window.web3) { // Legacy dapp browsers
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+        }
+
+        // Contract ABI and address
+        const contractABI = [
+          {
+            "constant": false,
+            "inputs": [
+              {
+                "internalType": "string",
+                "name": "_ipfsHash",
+                "type": "string"
+              }
+            ],
+            "name": "setHash",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+          },
+          {
+            "constant": true,
+            "inputs": [],
+            "name": "getHash",
+            "outputs": [
+              {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+              }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+          }
+        ];
+
+        const contractAddress = '0x81B6A25546e0c7a92DDDeA975B3338835A7E1690';
+
+        // Connect to the contract
+        const imageStorageContract = new web3.eth.Contract(contractABI, contractAddress);
+
+        // Function to set the IPFS hash
+        async function setIPFSHash(ipfsHash) {
+            const accounts = await web3.eth.getAccounts();
+            const receipt = await imageStorageContract.methods.setHash(ipfsHash).send({ from: accounts[0] });
+            console.log('Transaction Receipt:', receipt);
+        }
+
+        // Function to get the IPFS hash
+        async function getIPFSHash() {
+            const hash = await imageStorageContract.methods.getHash().call();
+            console.log('Stored IPFS Hash:', hash);
+            return hash;
+        }
+
+        function uploadImage() {
+            // Dummy example hash, replace with actual upload logic
+            const exampleHash = 'QmSomeExampleIPFSHash';
+            setIPFSHash(exampleHash).then(() => {
+                console.log('Image hash stored successfully.');
+            });
+        }
+
+        function retrieveImage() {
+            getIPFSHash().then(hash => {
+                console.log(`Access your image via: https://ipfs.io/ipfs/${hash}`);
+            });
+        }
+    </script>
+</body>
+</html>
