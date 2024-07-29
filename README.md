@@ -36,7 +36,7 @@ KEY FEATURES
 
 Secure Storage: Safely store personal details and medical documents.
 
-Healthcare Integration: Seamlessly communicate with healthcare providers.
+Healthcare Integration: Seamlessly communicate with healthcare providers by extracting the doctor's name from prescription images and the lab name from lab test images, and then sending these images for verification to ensure only verified records are saved.
 
 Family Profiles: Manage profiles for family members for consolidated health tracking.
 
